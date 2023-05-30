@@ -1,0 +1,133 @@
+第1至9题
+
+CREATE TABLE Student
+(	studentid Varchar(20);
+	name VARCHAR(20), 
+	sex VARCHAR(2), 
+	age INTEGER,
+	Fee DECIMAL(10,2),
+	address VARCHAR(50),
+	memo VARCHAR(300));
+
+CREATE TABLE CourseAa
+(	Aa1 VARCHAR(20),
+	Aa2 INTEGER,
+	Aa3 DECIMAL(10));
+
+CREATE TABLE ChooseBb
+(	Bb1 VARCHAR(30),
+	Bb2 INTEGER,
+	Bb3 DECIMAL(6));
+
+DROP table CourseAa;
+ALTER TABLE ChooseBb ADD(Bb4 VARCHAR(20) defult'系统测试值' not null));
+ALTER TABLE ChooseBb ADD(Bb5 VARCHAR(10) not null));
+CREATE VIEW View_bbl, View_bb2, view_bb3 AS 
+SELECT Bbl,Bb4,Bb5 
+FROM ChooseBb
+DROP VIEW 'View_bbl, View_bb2, view_bb3';
+CREATE INDEX index_bb2 ON choosebb (bb2)
+CREATE INDEX index_bb4 ON choosebb (bb4 DESC)
+DROP INDEX Index_bb2 ON choosebb
+
+第10至18题
+
+CREATE TABLE test
+(Name Varchar(20),
+	Age Integer,
+	Score Numeric(10,2),
+	Address Varchar(60));
+
+Insert into test (Name,Age,Score,Address) values ('赵一',20,580.00,'重邮宿舍 12-3-5');
+Insert into test (Name,Age,Score,Address) values ('钱二',19,540.00,'南福苑 5-2-9');
+Insert into test (Name,Age,Score,Address) values ('孙三',21,555.50,'学生新区 21-5-15');
+Insert into test (Name,Age,Score,Address) values ('李四',22,505.00,'重邮宿舍 8-6-22');
+Insert into test (Name,Age,Score,Address) values ('周五',20,495.50,'学生新区 23-4-8');
+Insert into test (Name,Age,Score,Address) values ('吴六',19,435.00,'南福苑 2-5-12');
+
+CREATE TABLE test_temp
+(Name Varchar(20),
+	Age Integer,
+	Score Numeric(10,2),
+	Address Varchar(60));
+
+Insert into test_temp (Name,Age,Score,Address) values ('郑七',21,490.50,'重邮宿舍 11-2-1');
+Insert into test_temp (Name,Age,Score,Address) values ('张八',20,560.00,'南福苑 3-3-3');
+Insert into test_temp (Name,Age,Score,Address) values ('王九',19,515.00,'学生新区 19-7-1');
+
+Insert into test (name,age,score,address)
+Select name,age,score,address
+from test_temp;
+
+Update test set score = score+5 where age <= 20;
+Update test set age = age-1 where address Like '南福苑%';
+
+Delete From test Where age>=21 and score >= 500.00;
+Delete From test Where score<=550 and address Like '重邮宿舍%';
+
+第19至34题
+
+CREATE TABLE Student
+(	SNO VARCHAR(10),
+	Name VARCHAR(10),
+	Age INTEGER,
+	College VARCHAR(30));
+
+CREATE TABLE Course
+(	CourseID VARCHAR(15),
+	CourseName VARCHAR(30),
+	CourseBeforeID VARCHAR(30));
+
+CREATE TABLE Choose
+(	SNO VARCHAR(20),
+	CourseID VARCHAR(30),
+	Score DECIMAL(5,2));
+
+INSERT INTO Student(SNO,Name,Age,College) VALUES('S00001','张三',20,'计算机学院');
+INSERT INTO Student(SNO,Name,Age,College) VALUES('S00002','李四',19,'通信学院');
+INSERT INTO Student(SNO,Name,Age,College) VALUES('S00003','王五',21,'计算机学院');
+
+INSERT INTO Course(CourseID,CourseName,CourseBeforeID) VALUES('C1','计算机引论',NULL);
+INSERT INTO Course(CourseID,CourseName,CourseBeforeID) VALUES('C2','C 语言','C1');
+INSERT INTO Course(CourseID,CourseName,CourseBeforeID) VALUES('C3','数据结构','C2');
+
+Insert into Choose (SNO,CourseID,Score) values ('S00001','C1',95);
+Insert into Choose (SNO,CourseID,Score) values ('S00001','C2',80);
+Insert into Choose (SNO,CourseID,Score) values ('S00001','C3',84);
+Insert into Choose (SNO,CourseID,Score) values ('S00002','C1',80);
+Insert into Choose (SNO,CourseID,Score) values ('S00002','C2',85);
+Insert into Choose (SNO,CourseID,Score) values ('S00003','C1',78);
+Insert into Choose (SNO,CourseID,Score) values ('S00003','C3',70);
+
+SELECT SNO,Name FROM Student WHERE College='计算机学院';
+SELECT * FROM Student WHERE Age BETWEEN 20 and 23;
+SELECT COUNT(*) FROM Student;
+SELECT MAX(Score) FROM Choose WHERE CourseID='C1';
+SELECT MIN(Score) FROM Choose WHERE CourseID='C1';
+SELECT SUM(Score) FROM Choose WHERE CourseID='C1';
+SELECT AVG(Score) FROM Choose WHERE CourseID='C1';
+SELECT CourseID,CourseName FROM  Course WHERE CourseBeforeID IS NULL;0
+
+SELECT Student.SNO,Student.Name,Course.CourseName,Choose.Score 
+FROM Student,Course,Choose 
+WHERE Student.SNO=Choose.SNO AND Course.CourseID=Choose.CourseID;
+
+SELECT * 
+FROM Student 
+WHERE EXISTS(
+	SELECT SNO 
+	FROM Student 
+	WHERE College in 
+		(SELECT College 
+		FROM Student 
+		WHERE Name='张三'));
+
+SELECT SNO,Score 
+FROM Choose 
+WHERE SNO IN 
+	(SELECT SNO FROM Choose WHERE CourseID='C1' AND Score<
+		(select Score FROM Choose WHERE CourseID='C1' and SNO IN 
+			(SELECT SNO FROM Student WHERE Name='张三')));
+
+SELECT SNO FROM Choose WHERE CourseID='C1' UNION SELECT SNO FROM Choose WHERE CourseID='C3';
+SELECT  DISTINCT SNO FROM Choose WHERE CourseID='C1' UNION SELECT DISTINCT SNO FROM Choose WHERE CourseID='C3';
